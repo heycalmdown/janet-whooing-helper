@@ -1,4 +1,5 @@
 (import char)
+(import util)
 
 (def SOURCE ``
 사용 2020.05.31 결제 시 사용 배달의민족 -19,500원 내역삭제
@@ -13,36 +14,30 @@
 적립 2020.05.29 이벤트 적립 계좌 충전 즉시적립 혜택 +1,500원 내역삭제
 ``)
 
-(defn rest [f & r] r)
-(defn price [str] (string (char/atoi str)))
-(defn date [str] (string/replace-all "." "-" str))
-(defn price->subject [price t cols] (string
-  (case t "사용" "기타+ 네이버페이포인트- ?"
-    "충전" "소하나- 네이버페이포인트+ 네이버페이포인트 충전"
-    "적립" "네이버페이포인트+ 페이백포인트기타+ 네이버페이포인트 적립") ";"
-  (string/join cols " ")))
+(defn type->whooing [t] (case t
+  "사용" "기타+ 네이버페이포인트- ?"
+  "충전" "소하나- 네이버페이포인트+ 네이버페이포인트 충전"
+  "적립" "네이버페이포인트+ 페이백포인트기타+ 네이버페이포인트 적립"))
 
 (defn sanitize [cols]
   (let [t (cols 0)
-        d (date (cols 1))
+        d (util/date (cols 1))
         rev-cols (reverse (array/slice cols 2))
-        p (price (rev-cols 1))
+        p (util/price (rev-cols 1))
         remains (string/join (reverse (array/slice rev-cols 2)) " ")]
     @[t d p remains]))
 
 (defn reorder [cols]
-  (let [price (cols 2) date (cols 1)]
+  (let [t (cols 0) price (cols 2) date (cols 1)]
     @[date
-      (string (math/abs (scan-number price)))
-      (price->subject price (cols 0) cols)]))
-
-(defn split-col [line] (string/split " " line))
-(defn join-col [cols] (string/join cols " "))
+      (util/string-abs price)
+      (type->whooing t)
+      (string ";" (string/join cols " "))]))
 
 (defn convert [line] (-> line
-  split-col
+  util/split-col
   sanitize
   reorder
-  join-col))
+  util/join-col))
 
 (each i (string/split "\n" SOURCE) (print (convert i)))
