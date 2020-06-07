@@ -16,22 +16,25 @@
 (defn rest [f & r] r)
 (defn price [str] (string (char/atoi str)))
 (defn date [str] (string/replace-all "." "-" str))
-(defn price->subject [price charge? cols] (string
-  (if (< (scan-number price) 0)
-    "기타+ 네이버페이포인트- ?"
-    (if charge? "소하나- 네이버페이포인트+ 네이버페이포인트 충전" "네이버페이포인트+ 페이백포인트기타+ 네이버페이포인트 적립")) ";"
+(defn price->subject [price t cols] (string
+  (case t "사용" "기타+ 네이버페이포인트- ?"
+    "충전" "소하나- 네이버페이포인트+ 네이버페이포인트 충전"
+    "적립" "네이버페이포인트+ 페이백포인트기타+ 네이버페이포인트 적립") ";"
   (string/join cols " ")))
 
 (defn sanitize [cols]
-  (let [d (date (cols 1))
+  (let [t (cols 0)
+        d (date (cols 1))
         rev-cols (reverse (array/slice cols 2))
         p (price (rev-cols 1))
         remains (string/join (reverse (array/slice rev-cols 2)) " ")]
-@[d p remains]))
+    @[t d p remains]))
 
 (defn reorder [cols]
-(let [price (cols 1) date (cols 0) charge? (int? (string/find "충전" (cols 2)))]
-    @[date (string (math/abs (scan-number price))) (price->subject price charge? cols)]))
+  (let [price (cols 2) date (cols 1)]
+    @[date
+      (string (math/abs (scan-number price)))
+      (price->subject price (cols 0) cols)]))
 
 (defn split-col [line] (string/split " " line))
 (defn join-col [cols] (string/join cols " "))
