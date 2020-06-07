@@ -18,7 +18,7 @@
 
 (defn reorder [cols]
   (let [price (cols 0) date (cols 3)]
-    @[date price (price->subject price cols)]))
+    @[date (string (math/abs (scan-number price))) (price->subject price cols)]))
 
 (defn split-col [line] (string/split " " line))
 (defn join-col [cols] (string/join cols " "))
