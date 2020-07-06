@@ -40,4 +40,5 @@
                          reorder
                          util/join-col))
 
-(each i (string/split "\n" SOURCE) (print (convert i)))
+(defn main [_ & args]
+  (each i (string/split "\n" SOURCE) (print (convert i))))
