@@ -7,8 +7,8 @@
 ``)
 
 (defn price->subject [price] (if (< (scan-number price) 0)
-  "기타+ 쿠페이머니- ?"
-  "쿠페이머니+ 하나- 쿠페이 충전"))
+                               "기타+ 소쿠페이머니- ?"
+                               "소쿠페이머니+ 소하나- 쿠페이 충전"))
 
 (defn sanitize [cols]
   (put cols 0 (util/price (cols 0)))
@@ -19,9 +19,9 @@
     @[date (util/string-abs price) (price->subject price) (string ";" (string/join cols " "))]))
 
 (defn convert [line] (-> line
-  util/split-col
-  sanitize
-  reorder
-  util/join-col))
+                         util/split-col
+                         sanitize
+                         reorder
+                         util/join-col))
 
 (each i (string/split "\n" SOURCE) (print (convert i)))

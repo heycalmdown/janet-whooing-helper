@@ -15,9 +15,9 @@
 ``)
 
 (defn type->whooing [t] (case t
-  "사용" "기타+ 네이버페이포인트- ?"
-  "충전" "소하나- 네이버페이포인트+ 네이버페이포인트 충전"
-  "적립" "네이버페이포인트+ 페이백포인트기타+ 네이버페이포인트 적립"))
+                          "사용" "기타+ 네이버페이포인트- ?"
+                          "충전" "소하나- 네이버페이포인트+ 네이버페이포인트 충전"
+                          "적립" "네이버페이포인트+ 페이백포인트기타+ 네이버페이포인트 적립"))
 
 (defn sanitize [cols]
   (let [t (cols 0)
@@ -35,9 +35,9 @@
       (string ";" (string/join cols " "))]))
 
 (defn convert [line] (-> line
-  util/split-col
-  sanitize
-  reorder
-  util/join-col))
+                         util/split-col
+                         sanitize
+                         reorder
+                         util/join-col))
 
 (each i (string/split "\n" SOURCE) (print (convert i)))
