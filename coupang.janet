@@ -24,5 +24,7 @@
                          reorder
                          util/join-col))
 
+(defn split [source] (filter (comp not empty?) (string/split "\n" source)))
+
 (defn main [_ & args]
   (each i (string/split "\n" SOURCE) (print (convert i))))

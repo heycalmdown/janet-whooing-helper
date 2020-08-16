@@ -1,23 +1,20 @@
 (import util)
 
 (def SOURCE ``
-[맛있게 한끼] 국산콩 두부 (찌개용)
-1,900원 1개 구매
-배송준비중	장바구니 담기
-	
-참타리버섯 100g
-950원 1개 구매
-배송준비중	장바구니 담기
-	
-[KF365] 깐마늘 200g
-1,980원 1개 구매
-배송준비중	장바구니 담기
-	
-게르마늄 무농약 컬러 방울토마토 500g
-15,800원 2개 구매
+[전통부산어묵 by.고래사] 모둠 어묵 270g
+판매가9,000원 2개 구매
+배송완료	
+후기쓰기
+장바구니 담기
+
+[남도우애] 무항생제 1++ 한우 정육 국거리용 200g(냉장)
+판매가15,000원 1개 구매
+배송완료	
+후기쓰기
+장바구니 담기
 ``)
 
-(defn price-only [line]  (util/price (0 (string/split " " line))))
+(defn price-only [line] (util/price (0 (string/split " " line))))
 
 (defn paren->square [s] (string/replace-all ")" "]" (string/replace-all "(" "[" s)))
 
