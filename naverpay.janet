@@ -28,13 +28,16 @@
       (type->whooing t)
       (string ";" (string/join cols " "))]))
 
-(defn convert [line] (-> line
-                         util/split-col
-                         sanitize
-                         reorder
-                         util/join-col))
+(defn convert-line [line] (-> line
+                              util/split-col
+                              sanitize
+                              reorder
+                              util/join-col))
 
 (defn split [source] (filter (comp not empty?) (string/split "\n" source)))
 
+(defn convert! [source args]
+  (each i (split source) (print (convert-line i))))
+
 (defn main [_ & args]
-  (each i (string/split "\n" SOURCE) (print (convert i))))
+  (convert! SOURCE args))

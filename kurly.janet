@@ -27,6 +27,9 @@
 (defn kurly-split-items [x]
   (string/split "\n\n" x))
 
-(defn main [_ & args]
+(defn convert! [source args]
   (let [date (if (empty? args) "오늘" (args 0))]
-    (each i (kurly-split-items SOURCE) (print (kurly->whooing i date)))))
+    (each i (kurly-split-items source) (print (kurly->whooing i date)))))
+
+(defn main [_ & args]
+  (convert! SOURCE args))
