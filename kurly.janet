@@ -25,11 +25,11 @@
     (string/join [date " 식재료(" subj ") " price " -식비 -네이버페이포인트"])))
 
 (defn kurly-split-items [x]
-  (string/split "\n\n" x))
+  (string/split "\n\n" (string/replace-all "\t" "" x)))
 
 (defn convert! [source args]
   (let [date (if (empty? args) "오늘" (args 0))]
     (each i (kurly-split-items source) (print (kurly->whooing i date)))))
 
-(defn main [_ & args]
-  (convert! SOURCE args))
+# (defn main [_ & args]
+#   (convert! SOURCE args))
