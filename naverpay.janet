@@ -8,31 +8,29 @@
 적립 2020.07.11 구매 적립예정 배달의민족 +284원 내역삭제
 ``)
 
-(defn type->whooing [t] (case t
-                          "사용" "기타+ 네이버페이포인트- ?"
-                          "충전" "네이버통장- 네이버페이포인트+ 네이버페이포인트 충전"
-                          "적립" "네이버페이포인트+ 페이백포인트기타+ 네이버페이포인트 적립"))
+(defn merchant->whooing [merchant] (case merchant
+                                                      "배달의민족" "식비+ 네이버페이포인트- ?"
+                                                      "기타+ 네이버페이포인트- ?"))
+
+(defn type->whooing [t merchant] (case t
+                                   "사용" (merchant->whooing merchant)
+                                   "충전" "네이버통장- 네이버페이포인트+ 네이버페이포인트 충전"
+                                   "적립" "네이버페이포인트+ 페이백포인트기타+ 네이버페이포인트 적립"))
 
 (defn reformat [cols]
   (let [t (cols 0)
         d (util/date (cols 1))
-        rev-cols (reverse (array/slice cols 2))
-        p (util/price (rev-cols 1))
-        remains (string/join (reverse (array/slice rev-cols 2)) " ")]
-    @[t d p remains]))
+        cmt (cols 2)
+        merchant (cols 3)
+        p (util/price (cols 4))]
+    @[t d p cmt merchant]))
 
 (defn reorder [cols]
-  (let [t (cols 0) price (cols 2) date (cols 1)]
+  (let [t (cols 0) date (cols 1) price (cols 2) merchant (cols 4)]
     @[date
       (util/string-abs price)
-      (type->whooing t)
+      (type->whooing t merchant)
       (string ";" (string/join cols " "))]))
-
-(defn convert-line [line] (-> line
-                              util/split-col
-                              reformat
-                              reorder
-                              util/join-col))
 
 (defn split [source] (filter (comp not empty?) (string/split "\n" source)))
 
