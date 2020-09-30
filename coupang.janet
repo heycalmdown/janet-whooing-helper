@@ -1,22 +1,39 @@
 (import char)
 (import util)
 
-(def SOURCE ``
--36,240원결제 87,115원 (잔액) 2020.05.16 (토) 20:18 [결제] 현대메디칼 디스크 팡 4단 목 견인 의료기기, 1개, 10000071049815
-100,000원충전 123,355원 (잔액) 2020.05.16 (토) 20:18 [잔액충전] 현대메디칼 디스크 팡 4단 목 견인 의료기기, 1개, 10000071049815
-``)
-
 (defn price->subject [price] (if (< (scan-number price) 0)
                                "기타+ 소쿠페이머니- ?"
                                "소쿠페이머니+ 소하나- 쿠페이 충전"))
+
+(defn type->whooing [t] (case t
+                          "결제" "기타+ 소쿠페이머니- ?"
+                          "충전" "소쿠페이머니+ 소하나- 쿠페이 충전"
+                          "인출" "소하나+ 소쿠페이머니- 쿠페이 인출"))
 
 (defn sanitize [cols]
   (put cols 0 (util/price (cols 0)))
   (put cols 3 (util/date (cols 3))))
 
+(defn parse-type [line]
+  (if (string/find "인출" line) "인출"
+    (if (string/find "충전" line) "충전"
+      (if (string/find "결제" line) "결제"))))
+
+(defn reformat [cols]
+  (def t (parse-type (0 cols)))
+  (def p (util/price (0 cols)))
+  (def remains (1 cols))
+  (def d (util/date (0 (string/split " " (2 cols)))))
+  (def subject (3 cols))
+  (def cmt (util/join-col cols))
+  @[t p remains d subject cmt])
+
 (defn reorder [cols]
   (let [price (cols 0) date (cols 3)]
-    @[date (util/string-abs price) (price->subject price) (string ";" (string/join cols " "))]))
+    @[(3 cols)
+      (util/string-abs (1 cols))
+      (type->whooing (0 cols))
+      (string ";" (5 cols))]))
 
 (defn convert-line [line] (-> line
                               util/split-col
@@ -24,11 +41,15 @@
                               reorder
                               util/join-col))
 
+(defn convert [item]
+  (util/join-col (reorder (reformat item))))
+
 (defn split [source] (filter (comp not empty?) (string/split "\n" source)))
 
+(defn slice-items [lines]
+  (if (> 4 (length lines))
+    []
+    [(array/slice lines 0 4) ;(slice-items (array/slice lines 4))]))
+
 (defn convert! [source args]
-  (each i (split source) (print (convert-line i))))
-
-
-(defn main [_ & args]
-  (convert! SOURCE args))
+  (each i (slice-items (split source)) (print (convert i))))
