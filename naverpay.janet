@@ -1,16 +1,9 @@
 (import char)
 (import util)
 
-(def SOURCE ``
-적립 2020.07.12 이벤트 적립 충전포인트 결제(네이버통장) +749원 내역삭제
-적립 2020.07.12 이벤트 적립 충전포인트 결제(네이버통장) +2,549원 내역삭제
-사용 2020.07.11 결제 시 사용 배달의민족 -56,900원 내역삭제
-적립 2020.07.11 구매 적립예정 배달의민족 +284원 내역삭제
-``)
-
 (defn merchant->whooing [merchant] (case merchant
-                                                      "배달의민족" "식비+ 네이버페이포인트- ?"
-                                                      "기타+ 네이버페이포인트- ?"))
+                                     "배달의민족" "식비+ 네이버페이포인트- ?"
+                                     "기타+ 네이버페이포인트- ?"))
 
 (defn type->whooing [t merchant] (case t
                                    "사용" (merchant->whooing merchant)
@@ -46,9 +39,11 @@
 (defn one-of [line] (or (= line "사용") (= line "적립") (= line "충전")))
 
 (defn sanitize [source]
-  (if-not
-    (one-of (0 source)) (sanitize (array/concat @[] (util/rest ;source)))
-    source))
+  (if (= 0 (length source))
+    []
+    (if-not
+      (one-of (0 source)) (sanitize (array/concat @[] (util/rest ;source)))
+      source)))
 
 (defn slice-items [lines]
   (def sanitized (sanitize lines))
@@ -58,7 +53,3 @@
 
 (defn convert! [source args]
   (each i (slice-items (split source)) (print (convert i))))
-
-# (defn main [_ & args]
-#   (convert! SOURCE args))
-
