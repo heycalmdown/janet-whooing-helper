@@ -3,6 +3,8 @@
 
 (defn merchant->whooing [merchant] (case merchant
                                      "배달의민족" "식비+ 네이버페이포인트- ?"
+                                     "nanaharu" "콩빈두+ 네이버페이포인트- ?"
+                                     "네이버플러스 멤버십" "기타비용+ 네이버페이포인트- ?"
                                      "기타+ 네이버페이포인트- ?"))
 
 (defn type->whooing [t merchant] (case t
