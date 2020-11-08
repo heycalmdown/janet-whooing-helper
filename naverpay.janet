@@ -1,16 +1,21 @@
 (import char)
 (import util)
 
-(defn merchant->whooing [merchant] (case merchant
-                                     "배달의민족" "식비+ 네이버페이포인트- ?"
-                                     "nanaharu" "콩빈두+ 네이버페이포인트- ?"
-                                     "네이버플러스 멤버십" "기타비용+ 네이버페이포인트- ?"
-                                     "기타+ 네이버페이포인트- ?"))
+(defn escape-by-cancel [] (error "취소건 발생") (os/exit 1))
+
+(defn merchant->whooing [merchant] (if (string/find "nanaharu" merchant) "콩빈두+ 네이버페이포인트- ?"
+                                     (case merchant
+                                       "배달의민족" "식비+ 네이버페이포인트- ?"
+                                       "네이버플러스 멤버십" "기타비용+ 네이버페이포인트- 네이버플러스"
+                                       "프로젝트21" "콩빈두+ 네이버페이포인트- 콩빈두 건강"
+                                       "THESUJATA" "미용+ 네이버페이포인트- 염색약"
+                                       "기타+ 네이버페이포인트- ?")))
 
 (defn type->whooing [t merchant] (case t
                                    "사용" (merchant->whooing merchant)
                                    "충전" "네이버통장- 네이버페이포인트+ 네이버페이포인트 충전"
-                                   "적립" "네이버페이포인트+ 페이백포인트기타+ 네이버페이포인트 적립"))
+                                   "적립" "네이버페이포인트+ 페이백포인트기타+ 네이버페이포인트 적립"
+                                   "취소" (escape-by-cancel)))
 
 (defn reformat [cols]
   (let [t (cols 0)
@@ -31,14 +36,10 @@
 
 (defn first-n [items n] [(array/slice items 0 n) (array/slice items n)])
 
-
-(defn escape-by-cancel [] (print "취소건 발생") (os/exit 1))
-
 (defn convert [item]
-  (if (= "취소" (0 item)) (escape-by-cancel))
   (util/join-col (reorder (reformat item))))
 
-(defn one-of [line] (or (= line "사용") (= line "적립") (= line "충전")))
+(defn one-of [line] (or (= line "사용") (= line "적립") (= line "충전") (= line "취소")))
 
 (defn sanitize [source]
   (if (= 0 (length source))
