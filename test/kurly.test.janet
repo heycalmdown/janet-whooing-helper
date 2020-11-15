@@ -45,4 +45,6 @@
   (test "간헐적 6줄 등장해도 처리할 수 있어야 함"
         (is (= "오늘 식재료([크레이브푸드] 콥 샐러드 240g) 5865 -식비 -네이버페이포인트" (kurly->whooing item-with-garbage "오늘"))))
   (test "not allowed parenthesis"
-        (is (= "무항생제 1등급 암퇘지 삼겹 찌개용 200g[냉장]" (paren->square "무항생제 1등급 암퇘지 삼겹 찌개용 200g(냉장)")))))
+        (is (= "무항생제 1등급 암퇘지 삼겹 찌개용 200g[냉장]" (paren->square "무항생제 1등급 암퇘지 삼겹 찌개용 200g(냉장)"))))
+  (test "빈줄 처리"
+        (is (= "" (kurly->whooing "" "오늘")))))

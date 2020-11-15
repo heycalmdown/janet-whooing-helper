@@ -19,10 +19,11 @@
 (defn paren->square [s] (string/replace-all ")" "]" (string/replace-all "(" "[" s)))
 
 (defn kurly->whooing [x date]
-  (let [lines (string/split "\n" x)
-        subj (paren->square (0 lines))
-        price (price-only (lines 1))]
-    (string/join [date " 식재료(" subj ") " price " -식비 -네이버페이포인트"])))
+  (def lines (string/split "\n" x))
+  (if (< (length lines) 2) ""
+    (let [subj (paren->square (0 lines))
+          price (price-only (lines 1))]
+      (string/join [date " 식재료(" subj ") " price " -식비 -네이버페이포인트"]))))
 
 (defn kurly-split-items [x]
   (string/split "\n\n" (string/replace-all "\t" "" x)))
