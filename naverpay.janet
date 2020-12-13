@@ -4,13 +4,14 @@
 (defn escape-by-cancel [] (error "취소건 발생") (os/exit 1))
 
 (defn merchant->whooing [merchant] (if (string/find "nanaharu" merchant) "콩빈두+ 네이버페이포인트- ?"
-                                     (case merchant
-                                       "배달의민족" "식비+ 네이버페이포인트- ?"
-                                       "네이버플러스 멤버십" "기타비용+ 네이버페이포인트- 네이버플러스"
-                                       "프로젝트21" "콩빈두+ 네이버페이포인트- 콩빈두 건강"
-                                       "PETHROOM" "콩빈두+ 네이버페이포인트- 콩빈두 모래"
-                                       "THESUJATA" "미용+ 네이버페이포인트- 염색약"
-                                       "기타+ 네이버페이포인트- ?")))
+                                     (if (string/find "PETHROOM" merchant) "콩빈두+ 네이버페이포인트- 콩빈두 모래"
+                                       (case merchant
+                                         "배달의민족" "식비+ 네이버페이포인트- ?"
+                                         "네이버플러스 멤버십" "기타비용+ 네이버페이포인트- 네이버플러스"
+                                         "프로젝트21" "콩빈두+ 네이버페이포인트- 콩빈두 건강"
+                                         "PETHROOM" "콩빈두+ 네이버페이포인트- 콩빈두 모래"
+                                         "THESUJATA" "미용+ 네이버페이포인트- 염색약"
+                                         "기타+ 네이버페이포인트- ?"))))
 
 (defn type->whooing [t merchant] (case t
                                    "사용" (merchant->whooing merchant)
